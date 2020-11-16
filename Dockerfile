@@ -10,6 +10,7 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true && ap
     clang \
     libpython3-dev \
     libblocksruntime-dev \
+    python3 python3-pip python3-setuptools \
     && rm -r /var/lib/apt/lists/*
 
 # Allow the caller to specify the toolchain to use
