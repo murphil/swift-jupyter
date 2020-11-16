@@ -18,7 +18,7 @@ ARG swift_tf_url=https://storage.googleapis.com/swift-tensorflow-artifacts/relea
 
 # Install some python libraries that are useful to call from swift
 WORKDIR /swift-jupyter
-COPY docker/requirements*.txt ./
+COPY requirements*.txt ./
 RUN python3 -m pip install --upgrade pip \
     && python3 -m pip install --no-cache-dir -r requirements.txt \
     && python3 -m pip install --no-cache-dir -r requirements_py_graphics.txt
