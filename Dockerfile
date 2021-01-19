@@ -11,6 +11,7 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true && ap
     libpython3-dev \
     libblocksruntime-dev \
     python3 python3-pip python3-setuptools \
+    && python3 -m pip install --upgrade pip \
     && rm -r /var/lib/apt/lists/*
 
 # Allow the caller to specify the toolchain to use
@@ -20,16 +21,15 @@ ARG swift_tf_url=https://storage.googleapis.com/swift-tensorflow-artifacts/relea
 # Install some python libraries that are useful to call from swift
 WORKDIR /swift-jupyter
 COPY requirements*.txt ./
-RUN python3 -m pip install --upgrade pip \
-    && python3 -m pip install --no-cache-dir -r requirements.txt \
+RUN python3 -m pip install --no-cache-dir -r requirements.txt \
     && python3 -m pip install --no-cache-dir -r requirements_py_graphics.txt
 
 # Download and extract S4TF
 WORKDIR /swift-tensorflow-toolchain
 ADD $swift_tf_url swift.tar.gz
 RUN mkdir usr \
-    && tar -xzf swift.tar.gz --directory=usr --strip-components=1 \
-    && rm swift.tar.gz
+    && curl -sSL $swift_tf_url \
+        | tar -xzf - --directory=usr --strip-components=1
 
 # Copy the kernel into the container
 WORKDIR /swift-jupyter
