@@ -11,7 +11,6 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true && ap
     libpython3-dev \
     libblocksruntime-dev \
     libdispatch-dev \
-    libsqlite3-dev \
     python3 python3-pip python3-setuptools \
     && python3 -m pip install --upgrade pip \
     && rm -r /var/lib/apt/lists/*
