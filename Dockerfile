@@ -10,6 +10,7 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true && ap
     clang \
     libpython3-dev \
     libblocksruntime-dev \
+    libdispatch-dev \
     python3 python3-pip python3-setuptools \
     && python3 -m pip install --upgrade pip \
     && rm -r /var/lib/apt/lists/*
@@ -26,13 +27,11 @@ RUN python3 -m pip install --no-cache-dir -r requirements.txt \
 
 # Download and extract S4TF
 WORKDIR /swift-tensorflow-toolchain
-ADD $swift_tf_url swift.tar.gz
 RUN mkdir usr \
     && curl -sSL $swift_tf_url \
         | tar -xzf - --directory=usr --strip-components=1
 
 # Copy the kernel into the container
-WORKDIR /swift-jupyter
 COPY . .
 
 # Register the kernel with jupyter
@@ -41,10 +40,20 @@ RUN python3 register.py --user --swift-toolchain /swift-tensorflow-toolchain
 # Add Swift to the PATH
 ENV PATH="$PATH:/swift-tensorflow-toolchain/usr/bin/"
 
+#
+WORKDIR /root
+RUN git clone https://github.com/apple/sourcekit-lsp.git \
+ && cd sourcekit-lsp \
+ && swift build \
+ && cd /root && rm -rf sourcekit-lsp \
+ && cfg_home=/etc/skel \
+ && nvim_home=$cfg_home/.config/nvim \
+ && nvim -u $nvim_home/init.vim --headless +"CocInstall -sync coc-$x" +qa \
+ && ehco '...'
+
 # Create the notebooks dir for mounting
 RUN mkdir /notebooks
 WORKDIR /notebooks
 
 # Run Jupyter on container start
 EXPOSE 8888
-CMD ["/swift-jupyter/run_jupyter.sh", "--allow-root", "--no-browser", "--ip=0.0.0.0", "--port=8888", "--NotebookApp.custom_display_url=http://127.0.0.1:8888"]

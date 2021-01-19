@@ -15,4 +15,10 @@
 # ==============================================================================
 
 
-python3 -m jupyter notebook "$@"
+python3 -m jupyter notebook \
+    --allow-root \
+    --no-browser \
+    --ip=0.0.0.0 \
+    --port=8888 \
+    --NotebookApp.custom_display_url=http://127.0.0.1:8888 \
+    "$@"
