@@ -43,7 +43,7 @@ ENV PATH="$PATH:/swift-tensorflow-toolchain/usr/bin/"
 
 #
 WORKDIR /root
-RUN git clone https://github.com/apple/sourcekit-lsp.git \
+RUN git clone --depth=1 https://github.com/apple/sourcekit-lsp.git \
  && cd sourcekit-lsp \
  && swift build \
  && cd /root && rm -rf sourcekit-lsp \
