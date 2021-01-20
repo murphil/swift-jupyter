@@ -50,7 +50,7 @@ RUN git clone --depth=1 https://github.com/apple/sourcekit-lsp.git \
 RUN cfg_home=/etc/skel \
  && nvim_home=$cfg_home/.config/nvim \
  && nvim -u $nvim_home/init.vim --headless +"CocInstall -sync coc-sourcekit" +qa \
- && echo $nvim_home/coc-settings.json \
+ && cat $nvim_home/coc-settings.json \
     | jq -e '."sourcekit.commandPath"="/swift-tensorflow-toolchain/usr/bin/sourcekit-lsp"' \
     > $nvim_home/coc-settings.json
 
