@@ -42,15 +42,17 @@ ENV PATH="$PATH:/swift-tensorflow-toolchain/usr/bin/"
 
 #
 WORKDIR /root
-RUN cfg_home=/etc/skel \
- && nvim_home=$cfg_home/.config/nvim \
- && nvim -u $nvim_home/init.vim --headless +"CocInstall -sync coc-sourcekit" +qa \
- && echo '...'
-
 RUN git clone --depth=1 https://github.com/apple/sourcekit-lsp.git \
  && cd sourcekit-lsp \
   ; swift build \
   ; cd /root && rm -rf sourcekit-lsp
+
+RUN cfg_home=/etc/skel \
+ && nvim_home=$cfg_home/.config/nvim \
+ && nvim -u $nvim_home/init.vim --headless +"CocInstall -sync coc-sourcekit" +qa \
+ && echo $nvim_home/coc-settings.json \
+    | jq -e '."sourcekit.commandPath"="/swift-tensorflow-toolchain/usr/bin/sourcekit-lsp"' \
+    > $nvim_home/coc-settings.json
 
 # Create the notebooks dir for mounting
 RUN mkdir /notebooks
