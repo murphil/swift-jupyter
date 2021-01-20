@@ -49,8 +49,8 @@ RUN cfg_home=/etc/skel \
 
 RUN git clone --depth=1 https://github.com/apple/sourcekit-lsp.git \
  && cd sourcekit-lsp \
- && swift build \
- && cd /root && rm -rf sourcekit-lsp
+  ; swift build \
+  ; cd /root && rm -rf sourcekit-lsp
 
 # Create the notebooks dir for mounting
 RUN mkdir /notebooks
