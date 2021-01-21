@@ -31,21 +31,8 @@ RUN mkdir usr \
     && curl -sSL $swift_tf_url \
         | tar -xzf - --directory=usr --strip-components=1
 
-# Copy the kernel into the container
-COPY . .
-
-# Register the kernel with jupyter
-RUN python3 register.py --user --swift-toolchain /swift-tensorflow-toolchain
-
 # Add Swift to the PATH
 ENV PATH="$PATH:/swift-tensorflow-toolchain/usr/bin/"
-
-#
-WORKDIR /root
-RUN git clone --depth=1 https://github.com/apple/sourcekit-lsp.git \
- && cd sourcekit-lsp \
-  ; swift build \
-  ; cd /root && rm -rf sourcekit-lsp
 
 RUN cfg_home=/etc/skel \
  && nvim_home=$cfg_home/.config/nvim \
@@ -54,6 +41,19 @@ RUN cfg_home=/etc/skel \
     | jq -e '."sourcekit.commandPath"="/swift-tensorflow-toolchain/usr/bin/sourcekit-lsp"' \
     > coc-settings.temp \
  && mv coc-settings.temp $nvim_home/coc-settings.json
+
+#
+WORKDIR /root
+RUN git clone --depth=1 https://github.com/apple/sourcekit-lsp.git \
+ && cd sourcekit-lsp \
+  ; swift build \
+  ; cd /root && rm -rf sourcekit-lsp
+
+# Copy the kernel into the container
+COPY . .
+
+# Register the kernel with jupyter
+RUN python3 register.py --user --swift-toolchain /swift-tensorflow-toolchain
 
 # Create the notebooks dir for mounting
 RUN mkdir /notebooks
