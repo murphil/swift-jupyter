@@ -52,7 +52,8 @@ RUN cfg_home=/etc/skel \
  && nvim -u $nvim_home/init.vim --headless +"CocInstall -sync coc-sourcekit" +qa \
  && cat $nvim_home/coc-settings.json \
     | jq -e '."sourcekit.commandPath"="/swift-tensorflow-toolchain/usr/bin/sourcekit-lsp"' \
-    > $nvim_home/coc-settings.json
+    > coc-settings.temp \
+ && mv coc-settings.temp $nvim_home/coc-settings.json
 
 # Create the notebooks dir for mounting
 RUN mkdir /notebooks
